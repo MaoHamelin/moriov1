@@ -8,23 +8,16 @@ namespace SpriteKind {
     export const p21 = SpriteKind.create()
     export const vie = SpriteKind.create()
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (monde == _1) {
+        if (joueur.vy == 0) {
+            joueur.vy = -150
+        }
+    }
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 100)
     info.changeScoreBy(1)
-})
-controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
-    if (didactitiel == _1 + 4 || didactitiel < _1 + 4) {
-        didactitiel = _1 + 5
-        sprites.destroyAllSpritesOfKind(SpriteKind.dna)
-        sprites.destroyAllSpritesOfKind(SpriteKind.da)
-        sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
-        sprites.destroyAllSpritesOfKind(SpriteKind.Coin)
-        tiles.setCurrentTilemap(tilemap`level0`)
-        game.showLongText("m-1 lvl-0", DialogLayout.Bottom)
-        info.setLife(3)
-        lvl = 0
-        joueur.setPosition(46, -5)
-    }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, location) {
     if (didactitiel == _1 + 4) {
@@ -181,17 +174,6 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, 
         lvl = 0.5
     }
 })
-controller.right.onEvent(ControllerButtonEvent.Released, function () {
-    if (didactitiel == _1 + 1) {
-        extralife = 3
-        pause(100)
-        game.showLongText("bravo", DialogLayout.Bottom)
-        game.showLongText("maintenant fait le parcours et touche le drapeau", DialogLayout.Bottom)
-        didactitiel += 1
-        tiles.setCurrentTilemap(tilemap`didactitiel2`)
-    }
-    animation.stopAnimation(animation.AnimationTypes.ImageAnimation, joueur)
-})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
     info.changeLifeBy(-1)
     joueur.setPosition(drapeau_a.x, drapeau_a.y)
@@ -202,6 +184,82 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, 
         didactitiel += 1
         tiles.setCurrentTilemap(tilemap`didactitiel 4`)
     }
+})
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    animation.runImageAnimation(
+    joueur,
+    [img`
+        . . . . f f f f f f . . . . . . 
+        . . . f 2 f e e e e f f . . . . 
+        . . f 2 2 2 f e e e e f f . . . 
+        . . f e e e e f f e e e f . . . 
+        . f e 2 2 2 2 e e f f f f . . . 
+        . f 2 e f f f f 2 2 2 e f . . . 
+        . f f f e e e f f f f f f f . . 
+        . f e e 4 4 f b e 4 4 e f f . . 
+        . . f e d d f 1 4 d 4 e e f . . 
+        . . . f d d d d 4 e e e f . . . 
+        . . . f e 4 4 4 e e f f . . . . 
+        . . . f 2 2 2 e d d 4 . . . . . 
+        . . . f 2 2 2 e d d e . . . . . 
+        . . . f 5 5 4 f e e f . . . . . 
+        . . . . f f f f f f . . . . . . 
+        . . . . . . f f f . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . f f f f f f . . . . . . 
+        . . . f 2 f e e e e f f . . . . 
+        . . f 2 2 2 f e e e e f f . . . 
+        . . f e e e e f f e e e f . . . 
+        . f e 2 2 2 2 e e f f f f . . . 
+        . f 2 e f f f f 2 2 2 e f . . . 
+        . f f f e e e f f f f f f f . . 
+        . f e e 4 4 f b e 4 4 e f f . . 
+        . . f e d d f 1 4 d 4 e e f . . 
+        . . . f d d d e e e e e f . . . 
+        . . . f e 4 e d d 4 f . . . . . 
+        . . . f 2 2 e d d e f . . . . . 
+        . . f f 5 5 f e e f f f . . . . 
+        . . f f f f f f f f f f . . . . 
+        . . . f f f . . . f f . . . . . 
+        `,img`
+        . . . . f f f f f f . . . . . . 
+        . . . f 2 f e e e e f f . . . . 
+        . . f 2 2 2 f e e e e f f . . . 
+        . . f e e e e f f e e e f . . . 
+        . f e 2 2 2 2 e e f f f f . . . 
+        . f 2 e f f f f 2 2 2 e f . . . 
+        . f f f e e e f f f f f f f . . 
+        . f e e 4 4 f b e 4 4 e f f . . 
+        . . f e d d f 1 4 d 4 e e f . . 
+        . . . f d d d d 4 e e e f . . . 
+        . . . f e 4 4 4 e e f f . . . . 
+        . . . f 2 2 2 e d d 4 . . . . . 
+        . . . f 2 2 2 e d d e . . . . . 
+        . . . f 5 5 4 f e e f . . . . . 
+        . . . . f f f f f f . . . . . . 
+        . . . . . . f f f . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . f f f f f f . . . . . . 
+        . . . f 2 f e e e e f f . . . . 
+        . . f 2 2 2 f e e e e f f . . . 
+        . . f e e e e f f e e e f . . . 
+        . f e 2 2 2 2 e e f f f f . . . 
+        . f 2 e f f f f 2 2 2 e f . . . 
+        . f f f e e e f f f f f f f . . 
+        . f e e 4 4 f b e 4 4 e f f . . 
+        . . f e d d f 1 4 d 4 e e f . . 
+        . . . f d d d d 4 e e e f . . . 
+        . . . f e 4 4 4 e d d 4 . . . . 
+        . . . f 2 2 2 2 e d d e . . . . 
+        . . f f 5 5 4 4 f e e f . . . . 
+        . . f f f f f f f f f f . . . . 
+        . . . f f f . . . f f . . . . . 
+        `],
+    100,
+    true
+    )
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.dna, function (sprite, otherSprite) {
     sprites.destroyAllSpritesOfKind(SpriteKind.da)
@@ -232,6 +290,28 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.dna, function (sprite, otherSpri
         didactitiel += 1
         tiles.setCurrentTilemap(tilemap`didactitiel 3`)
     }
+})
+controller.right.onEvent(ControllerButtonEvent.Released, function () {
+    if (didactitiel == _1 + 1) {
+        extralife = 3
+        pause(100)
+        game.showLongText("bravo", DialogLayout.Bottom)
+        game.showLongText("maintenant fait le parcours et touche le drapeau", DialogLayout.Bottom)
+        didactitiel += 1
+        tiles.setCurrentTilemap(tilemap`didactitiel2`)
+    }
+    animation.stopAnimation(animation.AnimationTypes.ImageAnimation, joueur)
+})
+controller.left.onEvent(ControllerButtonEvent.Released, function () {
+    if (didactitiel == _1 + 1) {
+        extralife = 3
+        pause(100)
+        game.showLongText("bravo", DialogLayout.Bottom)
+        game.showLongText("maintenant fait le parcours et touche le drapeau", DialogLayout.Bottom)
+        didactitiel += 1
+        tiles.setCurrentTilemap(tilemap`didactitiel2`)
+    }
+    animation.stopAnimation(animation.AnimationTypes.ImageAnimation, joueur)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.rush, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 100)
@@ -430,21 +510,6 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile18`, function (sprite, 
     joueur.vy = 30
     for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
         tiles.setTileAt(value, assets.tile`transparency16`)
-    }
-})
-controller.up.onEvent(ControllerButtonEvent.Released, function () {
-    if (didactitiel == _1) {
-        pause(100)
-        game.showLongText("bravo", DialogLayout.Bottom)
-        game.showLongText("appuis sur \"gauche\" ou \"Droit\" pour bouger", DialogLayout.Bottom)
-        didactitiel += 1
-    }
-})
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (monde == _1) {
-        if (joueur.vy == 0) {
-            joueur.vy = -150
-        }
     }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile16`, function (sprite, location) {
@@ -657,6 +722,14 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+controller.up.onEvent(ControllerButtonEvent.Released, function () {
+    if (didactitiel == _1) {
+        pause(100)
+        game.showLongText("bravo", DialogLayout.Bottom)
+        game.showLongText("appuis sur \"gauche\" ou \"Droit\" pour bouger", DialogLayout.Bottom)
+        didactitiel += 1
+    }
+})
 info.onLifeZero(function () {
     extralife += -1
     if (lvl > 0 + 0) {
@@ -801,16 +874,19 @@ info.onLifeZero(function () {
         info.setLife(3)
     }
 })
-controller.left.onEvent(ControllerButtonEvent.Released, function () {
-    if (didactitiel == _1 + 1) {
-        extralife = 3
-        pause(100)
-        game.showLongText("bravo", DialogLayout.Bottom)
-        game.showLongText("maintenant fait le parcours et touche le drapeau", DialogLayout.Bottom)
-        didactitiel += 1
-        tiles.setCurrentTilemap(tilemap`didactitiel2`)
+controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
+    if (didactitiel == _1 + 4 || didactitiel < _1 + 4) {
+        didactitiel = _1 + 5
+        sprites.destroyAllSpritesOfKind(SpriteKind.dna)
+        sprites.destroyAllSpritesOfKind(SpriteKind.da)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Coin)
+        tiles.setCurrentTilemap(tilemap`level0`)
+        game.showLongText("m-1 lvl-0", DialogLayout.Bottom)
+        info.setLife(3)
+        lvl = 0
+        joueur.setPosition(46, -5)
     }
-    animation.stopAnimation(animation.AnimationTypes.ImageAnimation, joueur)
 })
 info.onScore(200, function () {
     extralife += 1
@@ -1094,82 +1170,6 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile53`, function (sprite, 
     scene.cameraShake(4, 500)
     effects.blizzard.startScreenEffect(500)
     tiles.placeOnRandomTile(joueur, assets.tile`myTile55`)
-})
-controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-    animation.runImageAnimation(
-    joueur,
-    [img`
-        . . . . f f f f f f . . . . . . 
-        . . . f 2 f e e e e f f . . . . 
-        . . f 2 2 2 f e e e e f f . . . 
-        . . f e e e e f f e e e f . . . 
-        . f e 2 2 2 2 e e f f f f . . . 
-        . f 2 e f f f f 2 2 2 e f . . . 
-        . f f f e e e f f f f f f f . . 
-        . f e e 4 4 f b e 4 4 e f f . . 
-        . . f e d d f 1 4 d 4 e e f . . 
-        . . . f d d d d 4 e e e f . . . 
-        . . . f e 4 4 4 e e f f . . . . 
-        . . . f 2 2 2 e d d 4 . . . . . 
-        . . . f 2 2 2 e d d e . . . . . 
-        . . . f 5 5 4 f e e f . . . . . 
-        . . . . f f f f f f . . . . . . 
-        . . . . . . f f f . . . . . . . 
-        `,img`
-        . . . . . . . . . . . . . . . . 
-        . . . . f f f f f f . . . . . . 
-        . . . f 2 f e e e e f f . . . . 
-        . . f 2 2 2 f e e e e f f . . . 
-        . . f e e e e f f e e e f . . . 
-        . f e 2 2 2 2 e e f f f f . . . 
-        . f 2 e f f f f 2 2 2 e f . . . 
-        . f f f e e e f f f f f f f . . 
-        . f e e 4 4 f b e 4 4 e f f . . 
-        . . f e d d f 1 4 d 4 e e f . . 
-        . . . f d d d e e e e e f . . . 
-        . . . f e 4 e d d 4 f . . . . . 
-        . . . f 2 2 e d d e f . . . . . 
-        . . f f 5 5 f e e f f f . . . . 
-        . . f f f f f f f f f f . . . . 
-        . . . f f f . . . f f . . . . . 
-        `,img`
-        . . . . f f f f f f . . . . . . 
-        . . . f 2 f e e e e f f . . . . 
-        . . f 2 2 2 f e e e e f f . . . 
-        . . f e e e e f f e e e f . . . 
-        . f e 2 2 2 2 e e f f f f . . . 
-        . f 2 e f f f f 2 2 2 e f . . . 
-        . f f f e e e f f f f f f f . . 
-        . f e e 4 4 f b e 4 4 e f f . . 
-        . . f e d d f 1 4 d 4 e e f . . 
-        . . . f d d d d 4 e e e f . . . 
-        . . . f e 4 4 4 e e f f . . . . 
-        . . . f 2 2 2 e d d 4 . . . . . 
-        . . . f 2 2 2 e d d e . . . . . 
-        . . . f 5 5 4 f e e f . . . . . 
-        . . . . f f f f f f . . . . . . 
-        . . . . . . f f f . . . . . . . 
-        `,img`
-        . . . . . . . . . . . . . . . . 
-        . . . . f f f f f f . . . . . . 
-        . . . f 2 f e e e e f f . . . . 
-        . . f 2 2 2 f e e e e f f . . . 
-        . . f e e e e f f e e e f . . . 
-        . f e 2 2 2 2 e e f f f f . . . 
-        . f 2 e f f f f 2 2 2 e f . . . 
-        . f f f e e e f f f f f f f . . 
-        . f e e 4 4 f b e 4 4 e f f . . 
-        . . f e d d f 1 4 d 4 e e f . . 
-        . . . f d d d d 4 e e e f . . . 
-        . . . f e 4 4 4 e d d 4 . . . . 
-        . . . f 2 2 2 2 e d d e . . . . 
-        . . f f 5 5 4 4 f e e f . . . . 
-        . . f f f f f f f f f f . . . . 
-        . . . f f f . . . f f . . . . . 
-        `],
-    100,
-    true
-    )
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile30`, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.da)

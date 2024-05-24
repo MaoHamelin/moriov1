@@ -1,4 +1,4 @@
-// Auto-generated code. Do not edit.
+// Code généré automatiquement. Ne pas modifier.
 namespace myImages {
 
     helpers._registerFactory("image", function(name: string) {
@@ -53,4 +53,4 @@ c d d 1 1 d d c
     })
 
 }
-// Auto-generated code. Do not edit.
+// Code généré automatiquement. Ne pas modifier.

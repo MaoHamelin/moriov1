@@ -2029,6 +2029,7 @@ game.onUpdate(function () {
 })
 forever(function () {
     if (menu_ == 1) {
+        effects.starField.startScreenEffect()
         go = -1
         extralife = -1
         didactitiel = -1

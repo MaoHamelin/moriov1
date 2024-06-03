@@ -9,6 +9,7 @@ namespace SpriteKind {
     export const vie = SpriteKind.create()
     export const curseur_ = SpriteKind.create()
     export const menu = SpriteKind.create()
+    export const train = SpriteKind.create()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 100)
@@ -182,7 +183,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, 
         tiles.setCurrentTilemap(tilemap`monde-1-1`)
         scene.setBackgroundColor(7)
         game.showLongText("m-1", DialogLayout.Bottom)
-        monde = 1
+        gravité = 1
         lvl = 0.5
     }
 })
@@ -196,7 +197,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile32`, function (sprite, 
     sprites.destroyAllSpritesOfKind(SpriteKind.p12)
     sprites.destroyAllSpritesOfKind(SpriteKind.p21)
     joueur.setPosition(46, -5)
-    tiles.setCurrentTilemap(tilemap`monde-1 5`)
+    tiles.setCurrentTilemap(tilemap`monde-1 0`)
     scene.setBackgroundImage(img`
         ................................................................................................................................................................
         ................................................................................................................................................................
@@ -321,7 +322,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile32`, function (sprite, 
         `)
     scene.setBackgroundColor(7)
     game.showLongText("m-1", DialogLayout.Bottom)
-    monde = 1
+    gravité = 1
 })
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
     if (go == 2) {
@@ -334,6 +335,12 @@ controller.right.onEvent(ControllerButtonEvent.Released, function () {
             tiles.setCurrentTilemap(tilemap`didactitiel2`)
         }
         animation.stopAnimation(animation.AnimationTypes.ImageAnimation, joueur)
+    }
+})
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, otherSprite) {
+    if (crossroute == 1) {
+        crossroute = 0
+        tiles.placeOnRandomTile(joueur, assets.tile`myTile83`)
     }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
@@ -569,7 +576,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile18`, function (sprite, 
     game.showLongText("m-1 lvl-3", DialogLayout.Bottom)
     tiles.setCurrentTilemap(tilemap`niveau14`)
     joueur.setPosition(74, 47)
-    monde = 0
+    gravité = 0
     tiles.placeOnRandomTile(joueur, assets.tile`myTile49`)
     joueur.vy = 30
     for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
@@ -586,14 +593,23 @@ controller.up.onEvent(ControllerButtonEvent.Released, function () {
         }
     }
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile129`, function (sprite, location) {
+    joueur.setPosition(drapeau_a.x, drapeau_a.y)
+    info.changeLifeBy(-1)
+    tiles.setTileAt(location, assets.tile`transparency16`)
+    tiles.setTileAt(tiles.getTileLocation(location.column, location.row + 1), assets.tile`transparency16`)
+})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (go == 2) {
-        if (monde == _1) {
+        if (gravité == _1) {
             if (joueur.vy == 0) {
                 joueur.vy = -150
             }
         }
     }
+})
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Projectile, function (sprite, otherSprite) {
+    sprites.destroy(sprite)
 })
 sprites.onOverlap(SpriteKind.curseur_, SpriteKind.menu, function (sprite, otherSprite) {
     otherSprite.setScale(2.2, ScaleAnchor.Middle)
@@ -728,93 +744,512 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile16`, function (sprite, 
     game.showLongText("m-1 lvl-2", DialogLayout.Bottom)
     tiles.setCurrentTilemap(tilemap`level2 m1`)
     joueur.setPosition(74, 47)
-    monde = 0
+    gravité = 0
     tiles.placeOnRandomTile(joueur, assets.tile`myTile49`)
     joueur.vy = 30
     for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
         tiles.setTileAt(value, assets.tile`transparency16`)
     }
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile20`, function (sprite, location) {
+    scene.setBackgroundColor(13)
+    scene.setBackgroundImage(img`
+        3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+        3333333333333333333333333333333333333333333333333333333333333333333353333333333333333333333333333333333333333333333333333333333333333333333333333333533333333333
+        3333333333333333333333353333333333333333333333333333333333333333333555333333333333333333333333333333333533333333333333333333333333333333333333333335553333333333
+        3333333333333333333333555333333333333333333333333333333333333333335555533333333333333333333333333333335553333333333333333333333333333333333333333355555333333333
+        3333333333333333333333353333333333333333333333333333333333333333333555333333333333333333333333333333333533333333333333333333333333333333333333333335553333333333
+        3333333333333333333333333333333333333333333333333111333333333333333535333333333333333333333333333333333333333333333333333333333331113333333333333335353333333333
+        33333d11d3333333333333333333333333333333333333331111133333333333333333333333333333333d11d33333333333333333333333333333333333333311111333333333333333333333333333
+        33331111113333333333333333333333333333333331133111111d3333333333333333333333333333331111113333333333333333333333333333333331133111111d33333333333333333333333333
+        3331111111d33333333333333333333333333333331111d1111111133333333333333333333333333331111111d33333333333333333333333333333331111d111111113333333333333333333333333
+        33311111111d11333333333333333333333333333d1111111111111d33333333333333333333333333311111111d11333333333333333333333333333d1111111111111d333333333333333333333333
+        331111111111111333333333333333333333333d11111111111111111d3333333333333333333333331111111111111333333333333333333333333d11111111111111111d3333333333333333333333
+        1d1111111111111d31113333333333333333333333333333333333333333333366633333333333311d1111111111111d3111333333333333333333333333333333333333333333336663333333333331
+        1111111111111111111113333333333333333333333333333333333333333336776633333333331111111111111111111111133333333333333333333333333333333333333333367766333333333311
+        1111111111166666111113333333333333533333333333333333333333333366777633333333331111111111111666661111133333333333335333333333333333333333333333667776333333333311
+        111111111166777661111111d333333335553333333333333333333333333367777663333333d111111111111166777661111111d333333335553333333333333333333333333367777663333333d111
+        3333333336677777663333333333333355555333333333333333333333333367777763333333333333333333366777776633333333333333555553333333333333333333333333677777633333333333
+        3333333336777777763333333333333335553333333333333333333333333367777763333333333333333333367777777633333333333333355533333333333333333333333333677777633333333333
+        3333333366777777766333333333333335353333333333333333333333333367777763333333333333333333667777777663333333333333353533333333333333333333333333677777633333333333
+        3333333367777777776333333333333333333333333333333335333333333367777763333333333333333333677777777763333333333333333333333333333333353333333333677777633333333333
+        3333333367777777776333366333333333333333333333333355533333333367777763333333333333333333677777777763333663333333333333333333333333555333333333677777633333333333
+        3333333367777777776333677633333333333333333333333335333336633367777763333333333333333333677777777763336776333333333333333333333333353333366333677777633333333333
+        3333333367777777776336677663333333333333333333333333333367763367777763333333333333333333677777777763366776633333333333333333333333333333677633677777633333333333
+        3333333367777777776336777763333333333333333333333333333367763367777763333333333333333333677777777763367777633333333333333333333333333333677633677777633333333333
+        3333333367777777776336777763333333333333333333333333333367763367777763333333333333333333677777777763367777633333333333333333333333333333677633677777633333333333
+        6666333367777777776666777763333333333666666333333333333367763367777763333333333666663333677777777766667777633333333336666663333333333333677633677777633333333336
+        7776633367777777777777777763333333336666666633333333333367763367777763336633336677766333677777777777777777633333333366666666333333333333677633677777633366333366
+        7777633367777777777777777633333333366666666663333333333367763367777763367663366777776333677777777777777776333333333666666666633333333333677633677777633676633667
+        7777763367777777777777776633333333366666666663333333333367763367777763367763367777777633677777777777777766333333333666666666633333333333677633677777633677633677
+        7777763367777777776666666333333333666666666663333333333367763367777763367763367777777633677777777766666663333333336666666666633333333333677633677777633677633677
+        7777776367777777776333333333333333666666666663333333333367776667777763677763367777777763677777777763333333333333336666666666633333333333677766677777636777633677
+        7777776367777777776333333333333333666666666666333333333366777777777766677766667777777763677777777763333333333333336666666666663333333333667777777777666777666677
+        7777776367777777776333666666666333666666666666333333333336677777777776677666677777777763677777777763336666666663336666666666663333333333366777777777766776666777
+        7777776667777777776366677777776663666666666666333333333333666677777777777666677777777766677777777763666777777766636666666666663333333333336666777777777776666777
+        7777776667777777776667777777777766666666666666333366666633333677777777777666677777777766677777777766677777777777666666666666663333666666333336777777777776666777
+        7777776667777777776677777777777776666666666666366677777666333677777777776666677777777766677777777766777777777777766666666666663666777776663336777777777766666777
+        7777777667777777776777777777777777666666666666667777777776633677777766666666677777777776677777777767777777777777776666666666666677777777766336777777666666666777
+        7777777667777777766777777777777777666666666666677777777777663677777766666666677777777776677777777667777777777777776666666666666777777777776636777777666666666777
+        7777777667777777767777777777777777766666666666777777777777766677777766666666677777777776677777777677777777777777777666666666667777777777777666777777666666666777
+        7777777667777777667777777777777777766666666666777777777777766677777766666666677777777776677777776677777777777777777666666666667777777777777666777777666666666777
+        7777777667777777677777777777777777776666666666777777777777766677777766666666677777777776677777776777777777777777777766666666667777777777777666777777666666666777
+        7777777667777733333333777777777777776666666666777777773333333377777766666666677777777776677777333333337777777777777766666666667777777733333333777777666666666777
+        777777766777333dddddd3333777777777776666666666777777333dddddd3333777666666666777777777766777333dddddd3333777777777776666666666777777333dddddd3333777666666666777
+        7777777666333ddddddddddd33377777777766666666667777333ddddddddddd33376666666667777777777666333ddddddddddd33377777777766666666667777333ddddddddddd3337666666666777
+        77777776633ddddddddddddddd3337777777666666666677733ddddddddddddddd3336666666677777777776633ddddddddddddddd3337777777666666666677733ddddddddddddddd33366666666777
+        7777777333dddddddddddddddddd3333777766666666666333dddddddddddddddddd3333666667777777777333dddddddddddddddddd3333777766666666666333dddddddddddddddddd333366666777
+        33777333ddddddddddddddddddddddd33333333333666333ddddddddddddddddddddddd33333333333777333ddddddddddddddddddddddd33333333333666333ddddddddddddddddddddddd333333333
+        d33333ddddddddddddddddddddddddddd33dddddd33333ddddddddddddddddddddddddddd33dddddd33333ddddddddddddddddddddddddddd33dddddd33333ddddddddddddddddddddddddddd33ddddd
+        ddd33ddddddddddddddddddddddddd333dddddddddd33ddddddddddddddddddddddddd333dddddddddd33ddddddddddddddddddddddddd333dddddddddd33ddddddddddddddddddddddddd333ddddddd
+        ddddd33ddddddddddddddddddddd33ddddddddddddddd33ddddddddddddddddddddd33ddddddddddddddd33ddddddddddddddddddddd33ddddddddddddddd33ddddddddddddddddddddd33dddddddddd
+        ddddddd333dddddddddddddddd33ddddddddddddddddddd333dddddddddddddddd33ddddddddddddddddddd333dddddddddddddddd33ddddddddddddddddddd333dddddddddddddddd33dddddddddddd
+        dddddddddd333ddddddddddd33dddddddddddddddddddddddd333ddddddddddd33dddddddddddddddddddddddd333ddddddddddd33dddddddddddddddddddddddd333ddddddddddd33dddddddddddddd
+        dddddddddddd333ddddddd33dddddddddddddddddddddddddddd333ddddddd33dddddddddddddddddddddddddddd333ddddddd33dddddddddddddddddddddddddddd333ddddddd33dddddddddddddddd
+        dddddddddddddd333ddd33dddddddddddddddddddddddddddddddd333ddd33dddddddddddddddddddddddddddddddd333ddd33dddddddddddddddddddddddddddddddd333ddd33dddddddddddddddddd
+        dddddddddddddddd3333dddddddddddddddddddddddddddddddddddd3333dddddddddddddddddddddddddddddddddddd3333dddddddddddddddddddddddddddddddddddd3333dddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        `)
+    game.showLongText("m-2 lvl-1", DialogLayout.Bottom)
+    tiles.setCurrentTilemap(tilemap`level1`)
+    joueur.setPosition(46, -5)
+    gravité = 0
+    tiles.placeOnRandomTile(joueur, assets.tile`myTile49`)
+    joueur.vy = 30
+    for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
+        tiles.setTileAt(value, assets.tile`transparency16`)
+    }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile133`, function (sprite, location) {
+    joueur.setPosition(drapeau_a.x, drapeau_a.y)
+    info.changeLifeBy(-1)
+    tiles.setTileAt(location, assets.tile`transparency16`)
+    tiles.setTileAt(tiles.getTileLocation(location.column, location.row - 1), assets.tile`transparency16`)
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile91`, function (sprite, location) {
+    m = 2
+    sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
+    sprites.destroyAllSpritesOfKind(SpriteKind.train)
+    crossroute = 20
+    sprites.destroyAllSpritesOfKind(SpriteKind.da)
+    sprites.destroyAllSpritesOfKind(SpriteKind.dna)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Coin)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
+    sprites.destroyAllSpritesOfKind(SpriteKind.rush)
+    sprites.destroyAllSpritesOfKind(SpriteKind.life)
+    sprites.destroyAllSpritesOfKind(SpriteKind.p12)
+    sprites.destroyAllSpritesOfKind(SpriteKind.p21)
+    tiles.setCurrentTilemap(tilemap`monde-1-0`)
+    tiles.placeOnRandomTile(joueur, assets.tile`myTile21`)
+    scene.setBackgroundImage(img`
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        `)
+    scene.setBackgroundColor(7)
+    game.showLongText("m-1", DialogLayout.Bottom)
+    gravité = 1
+    sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
+    sprites.destroyAllSpritesOfKind(SpriteKind.train)
+})
+controller.combos.attachCombo("UUDDLRLRAB", function () {
+    if (gravité == 1) {
+        scene.setBackgroundColor(7)
+        scene.setBackgroundImage(img`
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            ................................................................................................................................................................
+            `)
+        game.showLongText("m-1 boss cross route", DialogLayout.Bottom)
+        tiles.setCurrentTilemap(tilemap`level5`)
+        joueur.setPosition(74, 47)
+        gravité = 3
+        tiles.placeOnRandomTile(joueur, assets.tile`myTile83`)
+        joueur.vy = 30
+    }
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (go == 2) {
-        animation.runImageAnimation(
-        joueur,
-        [img`
-            . . . . . . f f f f f f . . . . 
-            . . . . f f e e e e f 2 f . . . 
-            . . . f f e e e e f 2 2 2 f . . 
-            . . . f e e e f f e e e e f . . 
-            . . . f f f f e e 2 2 2 2 e f . 
-            . . . f e 2 2 2 f f f f e 2 f . 
-            . . f f f f f f f e e e f f f . 
-            . . f f e 4 4 e b f 4 4 e e f . 
-            . . f e e 4 d 4 1 f d d e f . . 
-            . . . f e e e 4 d d d d f . . . 
-            . . . . f f e e 4 4 4 e f . . . 
-            . . . . . 4 d d e 2 2 2 f . . . 
-            . . . . . e d d e 2 2 2 f . . . 
-            . . . . . f e e f 4 5 5 f . . . 
-            . . . . . . f f f f f f . . . . 
-            . . . . . . . f f f . . . . . . 
-            `,img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . f f f f f f . . . . 
-            . . . . f f e e e e f 2 f . . . 
-            . . . f f e e e e f 2 2 2 f . . 
-            . . . f e e e f f e e e e f . . 
-            . . . f f f f e e 2 2 2 2 e f . 
-            . . . f e 2 2 2 f f f f e 2 f . 
-            . . f f f f f f f e e e f f f . 
-            . . f f e 4 4 e b f 4 4 e e f . 
-            . . f e e 4 d 4 1 f d d e f . . 
-            . . . f e e e e e d d d f . . . 
-            . . . . . f 4 d d e 4 e f . . . 
-            . . . . . f e d d e 2 2 f . . . 
-            . . . . f f f e e f 5 5 f f . . 
-            . . . . f f f f f f f f f f . . 
-            . . . . . f f . . . f f f . . . 
-            `,img`
-            . . . . . . f f f f f f . . . . 
-            . . . . f f e e e e f 2 f . . . 
-            . . . f f e e e e f 2 2 2 f . . 
-            . . . f e e e f f e e e e f . . 
-            . . . f f f f e e 2 2 2 2 e f . 
-            . . . f e 2 2 2 f f f f e 2 f . 
-            . . f f f f f f f e e e f f f . 
-            . . f f e 4 4 e b f 4 4 e e f . 
-            . . f e e 4 d 4 1 f d d e f . . 
-            . . . f e e e 4 d d d d f . . . 
-            . . . . f f e e 4 4 4 e f . . . 
-            . . . . . 4 d d e 2 2 2 f . . . 
-            . . . . . e d d e 2 2 2 f . . . 
-            . . . . . f e e f 4 5 5 f . . . 
-            . . . . . . f f f f f f . . . . 
-            . . . . . . . f f f . . . . . . 
-            `,img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . f f f f f f . . . . 
-            . . . . f f e e e e f 2 f . . . 
-            . . . f f e e e e f 2 2 2 f . . 
-            . . . f e e e f f e e e e f . . 
-            . . . f f f f e e 2 2 2 2 e f . 
-            . . . f e 2 2 2 f f f f e 2 f . 
-            . . f f f f f f f e e e f f f . 
-            . . f f e 4 4 e b f 4 4 e e f . 
-            . . f e e 4 d 4 1 f d d e f . . 
-            . . . f e e e 4 d d d d f . . . 
-            . . . . 4 d d e 4 4 4 e f . . . 
-            . . . . e d d e 2 2 2 2 f . . . 
-            . . . . f e e f 4 4 5 5 f f . . 
-            . . . . f f f f f f f f f f . . 
-            . . . . . f f . . . f f f . . . 
-            `],
-        100,
-        true
-        )
+        if (crossroute == 0) {
+            animation.runImageAnimation(
+            joueur,
+            [img`
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e 4 d d d d f . . . 
+                . . . . f f e e 4 4 4 e f . . . 
+                . . . . . 4 d d e 2 2 2 f . . . 
+                . . . . . e d d e 2 2 2 f . . . 
+                . . . . . f e e f 4 5 5 f . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . . . . f f f . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e e e d d d f . . . 
+                . . . . . f 4 d d e 4 e f . . . 
+                . . . . . f e d d e 2 2 f . . . 
+                . . . . f f f e e f 5 5 f f . . 
+                . . . . f f f f f f f f f f . . 
+                . . . . . f f . . . f f f . . . 
+                `,img`
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e 4 d d d d f . . . 
+                . . . . f f e e 4 4 4 e f . . . 
+                . . . . . 4 d d e 2 2 2 f . . . 
+                . . . . . e d d e 2 2 2 f . . . 
+                . . . . . f e e f 4 5 5 f . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . . . . f f f . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e 4 d d d d f . . . 
+                . . . . 4 d d e 4 4 4 e f . . . 
+                . . . . e d d e 2 2 2 2 f . . . 
+                . . . . f e e f 4 4 5 5 f f . . 
+                . . . . f f f f f f f f f f . . 
+                . . . . . f f . . . f f f . . . 
+                `],
+            100,
+            true
+            )
+        }
     }
 })
 info.onLifeZero(function () {
     if (go > 0) {
+        let monde = 0
         extralife += -1
         if (lvl > 0 + 0) {
             pause(100)
@@ -952,11 +1387,155 @@ info.onLifeZero(function () {
             tiles.setCurrentTilemap(tilemap`monde-1-1`)
             scene.setBackgroundColor(7)
             game.showLongText("m-1", DialogLayout.Bottom)
-            monde = 1
+            gravité = 1
+        } else if (monde == 2) {
+            pause(100)
+            info.setLife(3)
+            info.setScore(0)
+            scene.setBackgroundImage(img`
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                ................................................................................................................................................................
+                `)
+            sprites.destroyAllSpritesOfKind(SpriteKind.da)
+            sprites.destroyAllSpritesOfKind(SpriteKind.dna)
+            sprites.destroyAllSpritesOfKind(SpriteKind.Coin)
+            sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
+            sprites.destroyAllSpritesOfKind(SpriteKind.rush)
+            sprites.destroyAllSpritesOfKind(SpriteKind.life)
+            joueur.setPosition(46, -5)
+            tiles.setCurrentTilemap(tilemap`monde-1-0`)
+            tiles.placeOnRandomTile(joueur, assets.tile`myTile21`)
+            scene.setBackgroundColor(5)
+            game.showLongText("m-2", DialogLayout.Bottom)
+            gravité = 1
         } else {
             joueur.setPosition(drapeau_a.x, drapeau_a.y)
             info.setLife(3)
         }
+    }
+})
+sprites.onOverlap(SpriteKind.train, SpriteKind.Player, function (sprite, otherSprite) {
+    if (crossroute == 1) {
+        crossroute = 0
+        tiles.placeOnRandomTile(joueur, assets.tile`myTile83`)
     }
 })
 controller.left.onEvent(ControllerButtonEvent.Released, function () {
@@ -978,6 +1557,137 @@ info.onScore(200, function () {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.life, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 100)
     info.changeLifeBy(1)
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile68`, function (sprite, location) {
+    scene.setBackgroundColor(7)
+    scene.setBackgroundImage(img`
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        ................................................................................................................................................................
+        `)
+    game.showLongText("m-1 boss cross route", DialogLayout.Bottom)
+    tiles.setCurrentTilemap(tilemap`level5`)
+    joueur.setPosition(74, 47)
+    gravité = 3
+    tiles.placeOnRandomTile(joueur, assets.tile`myTile83`)
+    joueur.vy = 30
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile10`, function (sprite, location) {
     scene.setBackgroundColor(9)
@@ -1104,9 +1814,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile10`, function (sprite, 
         7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
         `)
     game.showLongText("m-1 lvl-1", DialogLayout.Bottom)
-    tiles.setCurrentTilemap(tilemap`level1`)
+    tiles.setCurrentTilemap(tilemap`monde-1 5`)
     joueur.setPosition(46, -5)
-    monde = 0
+    gravité = 0
     tiles.placeOnRandomTile(joueur, assets.tile`myTile49`)
     joueur.vy = 30
     for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
@@ -1248,7 +1958,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile31`, function (sprite, 
         `)
     scene.setBackgroundColor(7)
     game.showLongText("m-1", DialogLayout.Bottom)
-    monde = 1
+    gravité = 1
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile53`, function (sprite, location) {
     scene.cameraShake(4, 500)
@@ -1257,80 +1967,90 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile53`, function (sprite, 
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (go == 2) {
-        animation.runImageAnimation(
-        joueur,
-        [img`
-            . . . . f f f f f f . . . . . . 
-            . . . f 2 f e e e e f f . . . . 
-            . . f 2 2 2 f e e e e f f . . . 
-            . . f e e e e f f e e e f . . . 
-            . f e 2 2 2 2 e e f f f f . . . 
-            . f 2 e f f f f 2 2 2 e f . . . 
-            . f f f e e e f f f f f f f . . 
-            . f e e 4 4 f b e 4 4 e f f . . 
-            . . f e d d f 1 4 d 4 e e f . . 
-            . . . f d d d d 4 e e e f . . . 
-            . . . f e 4 4 4 e e f f . . . . 
-            . . . f 2 2 2 e d d 4 . . . . . 
-            . . . f 2 2 2 e d d e . . . . . 
-            . . . f 5 5 4 f e e f . . . . . 
-            . . . . f f f f f f . . . . . . 
-            . . . . . . f f f . . . . . . . 
-            `,img`
-            . . . . . . . . . . . . . . . . 
-            . . . . f f f f f f . . . . . . 
-            . . . f 2 f e e e e f f . . . . 
-            . . f 2 2 2 f e e e e f f . . . 
-            . . f e e e e f f e e e f . . . 
-            . f e 2 2 2 2 e e f f f f . . . 
-            . f 2 e f f f f 2 2 2 e f . . . 
-            . f f f e e e f f f f f f f . . 
-            . f e e 4 4 f b e 4 4 e f f . . 
-            . . f e d d f 1 4 d 4 e e f . . 
-            . . . f d d d e e e e e f . . . 
-            . . . f e 4 e d d 4 f . . . . . 
-            . . . f 2 2 e d d e f . . . . . 
-            . . f f 5 5 f e e f f f . . . . 
-            . . f f f f f f f f f f . . . . 
-            . . . f f f . . . f f . . . . . 
-            `,img`
-            . . . . f f f f f f . . . . . . 
-            . . . f 2 f e e e e f f . . . . 
-            . . f 2 2 2 f e e e e f f . . . 
-            . . f e e e e f f e e e f . . . 
-            . f e 2 2 2 2 e e f f f f . . . 
-            . f 2 e f f f f 2 2 2 e f . . . 
-            . f f f e e e f f f f f f f . . 
-            . f e e 4 4 f b e 4 4 e f f . . 
-            . . f e d d f 1 4 d 4 e e f . . 
-            . . . f d d d d 4 e e e f . . . 
-            . . . f e 4 4 4 e e f f . . . . 
-            . . . f 2 2 2 e d d 4 . . . . . 
-            . . . f 2 2 2 e d d e . . . . . 
-            . . . f 5 5 4 f e e f . . . . . 
-            . . . . f f f f f f . . . . . . 
-            . . . . . . f f f . . . . . . . 
-            `,img`
-            . . . . . . . . . . . . . . . . 
-            . . . . f f f f f f . . . . . . 
-            . . . f 2 f e e e e f f . . . . 
-            . . f 2 2 2 f e e e e f f . . . 
-            . . f e e e e f f e e e f . . . 
-            . f e 2 2 2 2 e e f f f f . . . 
-            . f 2 e f f f f 2 2 2 e f . . . 
-            . f f f e e e f f f f f f f . . 
-            . f e e 4 4 f b e 4 4 e f f . . 
-            . . f e d d f 1 4 d 4 e e f . . 
-            . . . f d d d d 4 e e e f . . . 
-            . . . f e 4 4 4 e d d 4 . . . . 
-            . . . f 2 2 2 2 e d d e . . . . 
-            . . f f 5 5 4 4 f e e f . . . . 
-            . . f f f f f f f f f f . . . . 
-            . . . f f f . . . f f . . . . . 
-            `],
-        100,
-        true
-        )
+        if (crossroute == 0) {
+            animation.runImageAnimation(
+            joueur,
+            [img`
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d d 4 e e e f . . . 
+                . . . f e 4 4 4 e e f f . . . . 
+                . . . f 2 2 2 e d d 4 . . . . . 
+                . . . f 2 2 2 e d d e . . . . . 
+                . . . f 5 5 4 f e e f . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . . . . f f f . . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d e e e e e f . . . 
+                . . . f e 4 e d d 4 f . . . . . 
+                . . . f 2 2 e d d e f . . . . . 
+                . . f f 5 5 f e e f f f . . . . 
+                . . f f f f f f f f f f . . . . 
+                . . . f f f . . . f f . . . . . 
+                `,img`
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d d 4 e e e f . . . 
+                . . . f e 4 4 4 e e f f . . . . 
+                . . . f 2 2 2 e d d 4 . . . . . 
+                . . . f 2 2 2 e d d e . . . . . 
+                . . . f 5 5 4 f e e f . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . . . . f f f . . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d d 4 e e e f . . . 
+                . . . f e 4 4 4 e d d 4 . . . . 
+                . . . f 2 2 2 2 e d d e . . . . 
+                . . f f 5 5 4 4 f e e f . . . . 
+                . . f f f f f f f f f f . . . . 
+                . . . f f f . . . f f . . . . . 
+                `],
+            100,
+            true
+            )
+        }
+    }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile88`, function (sprite, location) {
+    if (crossroute == 1) {
+        if (!(joueur.tileKindAt(TileDirection.Bottom, assets.tile`myTile90`))) {
+            info.changeLifeBy(-1)
+            tiles.placeOnRandomTile(joueur, assets.tile`myTile83`)
+        }
     }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile30`, function (sprite, location) {
@@ -1468,7 +2188,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile30`, function (sprite, 
         `)
     scene.setBackgroundColor(7)
     game.showLongText("m-1", DialogLayout.Bottom)
-    monde = 1
+    gravité = 1
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     if (joueur.y < otherSprite.y) {
@@ -1480,21 +2200,28 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         joueur.setPosition(drapeau_a.x, drapeau_a.y)
     }
 })
+let vm: Sprite = null
+let vrd: Sprite = null
+let vrg: Sprite = null
 let coeur: Sprite = null
 let bee_rushe: Sprite = null
 let coin: Sprite = null
 let drapeau_na: Sprite = null
 let curseur: Sprite = null
 let start: Sprite = null
+let train: Sprite = null
+let m = 0
 let bee: Sprite = null
 let drapeau_a: Sprite = null
+let crossroute = 0
 let lvl = 0
 let didactitiel = 0
 let go = 0
 let joueur: Sprite = null
-let monde = 0
+let gravité = 0
 let extralife = 0
 let _1 = 0
+controller.combos.setExtendedComboMode(true)
 let extralifepng = sprites.create(img`
     ..ff...ff.....ff...ff.....ff...ff..
     .f22f.f22f...f22f.f22f...f22f.f22f.
@@ -1509,7 +2236,7 @@ let extralifepng = sprites.create(img`
     `, SpriteKind.vie)
 _1 = 0
 extralife = 3
-monde = 0
+gravité = 0
 joueur = sprites.create(img`
     . . . . . . f f f f . . . . . . 
     . . . . f f f 2 2 f f f . . . . 
@@ -1663,7 +2390,7 @@ for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
 }
 let menu_ = 1
 game.onUpdate(function () {
-    if (joueur.vy < 0 && (joueur.vx > 0 && monde == _1)) {
+    if (joueur.vy < 0 && (joueur.vx > 0 && gravité == _1)) {
         animation.runImageAnimation(
         joueur,
         [img`
@@ -1806,7 +2533,7 @@ game.onUpdate(function () {
         100,
         false
         )
-    } else if (joueur.vy < 0 && (joueur.vx < 0 && monde == _1)) {
+    } else if (joueur.vy < 0 && (joueur.vx < 0 && gravité == _1)) {
         animation.runImageAnimation(
         joueur,
         [img`
@@ -1950,7 +2677,7 @@ game.onUpdate(function () {
         false
         )
     }
-    if (joueur.vy == 0 && (joueur.vx == 0 && monde == _1)) {
+    if (joueur.vy == 0 && (joueur.vx == 0 && gravité == _1)) {
         animation.runImageAnimation(
         joueur,
         [img`
@@ -2025,6 +2752,437 @@ game.onUpdate(function () {
         100,
         false
         )
+    }
+})
+game.onUpdateInterval(2000, function () {
+    if (crossroute == 1) {
+        train = sprites.createProjectileFromSide(img`
+            .............................fffffffffff............
+            .............................fcccccccccf............
+            .............................fcccccccccf....fff.....
+            .............................fffffffffff...fdddf....
+            ..............................f2222222f.....f2f.....
+            ....f...fff........f...fff....f2fffff2f.....fdf.....
+            .fffcfffcccff...fffcfffcccff..f2f9f9f2f.....ffff....
+            fccccccccccccf.fccccccccccccf.f2fffff2ffffffff5f....
+            ffffffffffffff.ffffffffffffff.f2222222ff2f5f2f5f....
+            f555555555555f.f555555555555f.f22ff222ff2f5f2f5f....
+            f222522225222fff222522225222fff2fddf22ff2f5f2f5ff...
+            f22ff2222ff22f.f22ff2222ff22f.ffdffdffffffffffffff..
+            f2fddf22fddf2f.f2fddf22fddf2f..fdffdfbfddfbfddfbfbf.
+            fffddffffddfff.fffddffffddfff...fddfbbfddfbfddfbfbbf
+            `, 240, 0)
+        train.changeScale(0.5, ScaleAnchor.Middle)
+        tiles.placeOnRandomTile(train, assets.tile`myTile84`)
+        train.setPosition(-5, train.y - 5)
+        train.setKind(SpriteKind.train)
+        if (train.x == 220) {
+            sprites.destroy(train)
+        }
+    }
+})
+game.onUpdateInterval(1, function () {
+    if (crossroute == 20) {
+        sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
+        sprites.destroyAllSpritesOfKind(SpriteKind.train)
+    }
+})
+forever(function () {
+    if (gravité == _1 + 1) {
+        controller.moveSprite(joueur, 100, 100)
+        joueur.ay = 0
+        animation.stopAnimation(animation.AnimationTypes.All, joueur)
+    } else if (gravité == _1 + 3) {
+        crossroute = 1
+    } else {
+        joueur.ay = 300
+        controller.moveSprite(joueur, 100, 0)
+    }
+})
+forever(function () {
+    if (crossroute == _1 + 1) {
+        controller.moveSprite(joueur, 100, 100)
+        joueur.ay = 0
+        if (controller.up.isPressed()) {
+            animation.runImageAnimation(
+            joueur,
+            [img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f e e e e f f . . . . 
+                . . . f e e e f f e e e f . . . 
+                . . f f f f f 2 2 f f f f f . . 
+                . . f f e 2 e 2 2 e 2 e f f . . 
+                . . f e 2 f 2 f f 2 f 2 e f . . 
+                . . f f f 2 2 e e 2 2 f f f . . 
+                . f f e f 2 f e e f 2 f e f f . 
+                . f e e f f e e e e f e e e f . 
+                . . f e e e e e e e e e e f . . 
+                . . . f e e e e e e e e f . . . 
+                . . e 4 f f f f f f f f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 4 4 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f . . . . . . 
+                . . . . f f e e e e f f . . . . 
+                . . . f e e e f f e e e f . . . 
+                . . . f f f f 2 2 f f f f . . . 
+                . . f f e 2 e 2 2 e 2 e f f . . 
+                . . f e 2 f 2 f f f 2 f e f . . 
+                . . f f f 2 f e e 2 2 f f f . . 
+                . . f e 2 f f e e 2 f e e f . . 
+                . f f e f f e e e f e e e f f . 
+                . f f e e e e e e e e e e f f . 
+                . . . f e e e e e e e e f . . . 
+                . . . e f f f f f f f f 4 e . . 
+                . . . 4 f 2 2 2 2 2 e d d 4 . . 
+                . . . e f f f f f f e e 4 . . . 
+                . . . . f f f . . . . . . . . . 
+                `,img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f e e e e f f . . . . 
+                . . . f e e e f f e e e f . . . 
+                . . f f f f f 2 2 f f f f f . . 
+                . . f f e 2 e 2 2 e 2 e f f . . 
+                . . f e 2 f 2 f f 2 f 2 e f . . 
+                . . f f f 2 2 e e 2 2 f f f . . 
+                . f f e f 2 f e e f 2 f e f f . 
+                . f e e f f e e e e f e e e f . 
+                . . f e e e e e e e e e e f . . 
+                . . . f e e e e e e e e f . . . 
+                . . e 4 f f f f f f f f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 4 4 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f . . . . . . 
+                . . . . f f e e e e f f . . . . 
+                . . . f e e e f f e e e f . . . 
+                . . . f f f f 2 2 f f f f . . . 
+                . . f f e 2 e 2 2 e 2 e f f . . 
+                . . f e f 2 f f f 2 f 2 e f . . 
+                . . f f f 2 2 e e f 2 f f f . . 
+                . . f e e f 2 e e f f 2 e f . . 
+                . f f e e e f e e e f f e f f . 
+                . f f e e e e e e e e e e f f . 
+                . . . f e e e e e e e e f . . . 
+                . . e 4 f f f f f f f f e . . . 
+                . . 4 d d e 2 2 2 2 2 f 4 . . . 
+                . . . 4 e e f f f f f f e . . . 
+                . . . . . . . . . f f f . . . . 
+                `],
+            500,
+            true
+            )
+        } else {
+            joueur.setImage(img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f f e 2 2 2 2 2 2 e e f . . 
+                . . f e 2 f f f f f f 2 e f . . 
+                . . f f f f e e e e f f f f . . 
+                . f f e f b f 4 4 f b f e f f . 
+                . f e e 4 1 f d d f 1 4 e e f . 
+                . . f e e d d d d d d e e f . . 
+                . . . f e e 4 4 4 4 e e f . . . 
+                . . e 4 f 2 2 2 2 2 2 f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `)
+        }
+        if (controller.down.isPressed()) {
+            animation.runImageAnimation(
+            joueur,
+            [img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f f e 2 2 2 2 2 2 e e f . . 
+                . . f e 2 f f f f f f 2 e f . . 
+                . . f f f f e e e e f f f f . . 
+                . f f e f b f 4 4 f b f e f f . 
+                . f e e 4 1 f d d f 1 4 e e f . 
+                . . f e e d d d d d d e e f . . 
+                . . . f e e 4 4 4 4 e e f . . . 
+                . . e 4 f 2 2 2 2 2 2 f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f f e 2 2 2 2 2 2 e e f . . 
+                . f f e 2 f f f f f f 2 e f f . 
+                . f f f f f e e e e f f f f f . 
+                . . f e f b f 4 4 f b f e f . . 
+                . . f e 4 1 f d d f 1 4 e f . . 
+                . . . f e 4 d d d d 4 e f e . . 
+                . . f e f 2 2 2 2 e d d 4 e . . 
+                . . e 4 f 2 2 2 2 e d d e . . . 
+                . . . . f 4 4 5 5 f e e . . . . 
+                . . . . f f f f f f f . . . . . 
+                . . . . f f f . . . . . . . . . 
+                `,img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f f e 2 2 2 2 2 2 e e f . . 
+                . . f e 2 f f f f f f 2 e f . . 
+                . . f f f f e e e e f f f f . . 
+                . f f e f b f 4 4 f b f e f f . 
+                . f e e 4 1 f d d f 1 4 e e f . 
+                . . f e e d d d d d d e e f . . 
+                . . . f e e 4 4 4 4 e e f . . . 
+                . . e 4 f 2 2 2 2 2 2 f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f e e 2 2 2 2 2 2 e f f . . 
+                . f f e 2 f f f f f f 2 e f f . 
+                . f f f f f e e e e f f f f f . 
+                . . f e f b f 4 4 f b f e f . . 
+                . . f e 4 1 f d d f 1 4 e f . . 
+                . . e f e 4 d d d d 4 e f . . . 
+                . . e 4 d d e 2 2 2 2 f e f . . 
+                . . . e d d e 2 2 2 2 f 4 e . . 
+                . . . . e e f 5 5 4 4 f . . . . 
+                . . . . . f f f f f f f . . . . 
+                . . . . . . . . . f f f . . . . 
+                `],
+            500,
+            true
+            )
+        } else {
+            joueur.setImage(img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f f e 2 2 2 2 2 2 e e f . . 
+                . . f e 2 f f f f f f 2 e f . . 
+                . . f f f f e e e e f f f f . . 
+                . f f e f b f 4 4 f b f e f f . 
+                . f e e 4 1 f d d f 1 4 e e f . 
+                . . f e e d d d d d d e e f . . 
+                . . . f e e 4 4 4 4 e e f . . . 
+                . . e 4 f 2 2 2 2 2 2 f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `)
+        }
+        if (controller.right.isPressed()) {
+            animation.runImageAnimation(
+            joueur,
+            [img`
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e 4 d d d d f . . . 
+                . . . . f f e e 4 4 4 e f . . . 
+                . . . . . 4 d d e 2 2 2 f . . . 
+                . . . . . e d d e 2 2 2 f . . . 
+                . . . . . f e e f 4 5 5 f . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . . . . f f f . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e e e d d d f . . . 
+                . . . . . f 4 d d e 4 e f . . . 
+                . . . . . f e d d e 2 2 f . . . 
+                . . . . f f f e e f 5 5 f f . . 
+                . . . . f f f f f f f f f f . . 
+                . . . . . f f . . . f f f . . . 
+                `,img`
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e 4 d d d d f . . . 
+                . . . . f f e e 4 4 4 e f . . . 
+                . . . . . 4 d d e 2 2 2 f . . . 
+                . . . . . e d d e 2 2 2 f . . . 
+                . . . . . f e e f 4 5 5 f . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . . . . f f f . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . f f f f f f . . . . 
+                . . . . f f e e e e f 2 f . . . 
+                . . . f f e e e e f 2 2 2 f . . 
+                . . . f e e e f f e e e e f . . 
+                . . . f f f f e e 2 2 2 2 e f . 
+                . . . f e 2 2 2 f f f f e 2 f . 
+                . . f f f f f f f e e e f f f . 
+                . . f f e 4 4 e b f 4 4 e e f . 
+                . . f e e 4 d 4 1 f d d e f . . 
+                . . . f e e e 4 d d d d f . . . 
+                . . . . 4 d d e 4 4 4 e f . . . 
+                . . . . e d d e 2 2 2 2 f . . . 
+                . . . . f e e f 4 4 5 5 f f . . 
+                . . . . f f f f f f f f f f . . 
+                . . . . . f f . . . f f f . . . 
+                `],
+            500,
+            true
+            )
+        } else {
+            joueur.setImage(img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f f e 2 2 2 2 2 2 e e f . . 
+                . . f e 2 f f f f f f 2 e f . . 
+                . . f f f f e e e e f f f f . . 
+                . f f e f b f 4 4 f b f e f f . 
+                . f e e 4 1 f d d f 1 4 e e f . 
+                . . f e e d d d d d d e e f . . 
+                . . . f e e 4 4 4 4 e e f . . . 
+                . . e 4 f 2 2 2 2 2 2 f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `)
+        }
+        if (controller.left.isPressed()) {
+            animation.runImageAnimation(
+            joueur,
+            [img`
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d d 4 e e e f . . . 
+                . . . f e 4 4 4 e e f f . . . . 
+                . . . f 2 2 2 e d d 4 . . . . . 
+                . . . f 2 2 2 e d d e . . . . . 
+                . . . f 5 5 4 f e e f . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . . . . f f f . . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d e e e e e f . . . 
+                . . . f e 4 e d d 4 f . . . . . 
+                . . . f 2 2 e d d e f . . . . . 
+                . . f f 5 5 f e e f f f . . . . 
+                . . f f f f f f f f f f . . . . 
+                . . . f f f . . . f f . . . . . 
+                `,img`
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d d 4 e e e f . . . 
+                . . . f e 4 4 4 e e f f . . . . 
+                . . . f 2 2 2 e d d 4 . . . . . 
+                . . . f 2 2 2 e d d e . . . . . 
+                . . . f 5 5 4 f e e f . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . . . . f f f . . . . . . . 
+                `,img`
+                . . . . . . . . . . . . . . . . 
+                . . . . f f f f f f . . . . . . 
+                . . . f 2 f e e e e f f . . . . 
+                . . f 2 2 2 f e e e e f f . . . 
+                . . f e e e e f f e e e f . . . 
+                . f e 2 2 2 2 e e f f f f . . . 
+                . f 2 e f f f f 2 2 2 e f . . . 
+                . f f f e e e f f f f f f f . . 
+                . f e e 4 4 f b e 4 4 e f f . . 
+                . . f e d d f 1 4 d 4 e e f . . 
+                . . . f d d d d 4 e e e f . . . 
+                . . . f e 4 4 4 e d d 4 . . . . 
+                . . . f 2 2 2 2 e d d e . . . . 
+                . . f f 5 5 4 4 f e e f . . . . 
+                . . f f f f f f f f f f . . . . 
+                . . . f f f . . . f f . . . . . 
+                `],
+            500,
+            true
+            )
+        } else {
+            joueur.setImage(img`
+                . . . . . . f f f f . . . . . . 
+                . . . . f f f 2 2 f f f . . . . 
+                . . . f f f 2 2 2 2 f f f . . . 
+                . . f f f e e e e e e f f f . . 
+                . . f f e 2 2 2 2 2 2 e e f . . 
+                . . f e 2 f f f f f f 2 e f . . 
+                . . f f f f e e e e f f f f . . 
+                . f f e f b f 4 4 f b f e f f . 
+                . f e e 4 1 f d d f 1 4 e e f . 
+                . . f e e d d d d d d e e f . . 
+                . . . f e e 4 4 4 4 e e f . . . 
+                . . e 4 f 2 2 2 2 2 2 f 4 e . . 
+                . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+                . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
+                . . . . . f f f f f f . . . . . 
+                . . . . . f f . . f f . . . . . 
+                `)
+        }
     }
 })
 forever(function () {
@@ -2165,15 +3323,15 @@ forever(function () {
             ...111111111111111111111111111111111111111111...
             ..1dddddddddddddddddddddddddddddddddddddddddd1..
             .1dddddddddddddddddddddddddddddddddddddddddddd1.
-            1ddddd777dd77777ddddd777ddddd7777dddd77777ddddd1
-            1dddd7ddd7ddd7dddddd7ddd7dddd7ddd7ddddd7ddddddd1
-            1dddd7ddddddd7ddddd7ddddd7ddd7ddd7ddddd7ddddddd1
-            1ddddd7dddddd7ddddd7ddddd7ddd7ddd7ddddd7ddddddd1
-            1dddddd7ddddd7ddddd7ddddd7ddd7777dddddd7ddddddd1
-            1ddddddd7dddd7ddddd7777777ddd7d7ddddddd7ddddddd1
-            1dddddddd7ddd7ddddd7ddddd7ddd7dd7dddddd7ddddddd1
-            1dddd7ddd7ddd7ddddd7ddddd7ddd7ddd7ddddd7ddddddd1
-            1ddddd777dddd7ddddd7ddddd7ddd7ddd7ddddd7ddddddd1
+            1ddddd7775dd777775ddd7775dddd77775ddd777775dddd1
+            1dddd75dd75ddd75dddd75dd75ddd75dd75dddd75dddddd1
+            1dddd75ddddddd75ddd75dddd75dd75dd75dddd75dddddd1
+            1ddddd75dddddd75ddd75dddd75dd75dd75dddd75dddddd1
+            1dddddd75ddddd75ddd75dddd75dd77775ddddd75dddddd1
+            1ddddddd75dddd75ddd77777775dd7575dddddd75dddddd1
+            1dddddddd75ddd75ddd75dddd75dd75d75ddddd75dddddd1
+            1dddd7ddd75ddd75ddd75dddd75dd75dd75dddd75dddddd1
+            1ddddd7775dddd75ddd75dddd75dd75dd75dddd75dddddd1
             1dddddddddddddddddddddddddddddddddddddddddddddd1
             .1dddddddddddddddddddddddddddddddddddddddddddd1.
             ..1dddddddddddddddddddddddddddddddddddddddddd1..
@@ -2215,6 +3373,7 @@ forever(function () {
 })
 forever(function () {
     if (go == 1) {
+        effects.starField.endScreenEffect()
         go = 2
         sprites.destroy(start)
         sprites.destroy(curseur)
@@ -2233,7 +3392,7 @@ forever(function () {
         didactitiel = 1
         _1 = 0
         extralife = 3
-        monde = 0
+        gravité = 0
         joueur = sprites.create(img`
             . . . . . . f f f f . . . . . . 
             . . . . f f f 2 2 f f f . . . . 
@@ -2375,7 +3534,6 @@ forever(function () {
             7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
             7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
             `)
-        controller.moveSprite(joueur, 100, 0)
         joueur.ay = 350
         joueur.setStayInScreen(true)
         scene.cameraFollowSprite(joueur)
@@ -2386,6 +3544,11 @@ forever(function () {
         for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
             tiles.setTileAt(value, assets.tile`transparency16`)
         }
+    }
+})
+forever(function () {
+    if (info.score() < 0) {
+        info.setScore(0)
     }
 })
 forever(function () {
@@ -2431,24 +3594,12 @@ forever(function () {
             .....f...........f...........f.....
             `)
     } else if (extralife == 0 + 0) {
+        sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
+        sprites.destroyAllSpritesOfKind(SpriteKind.train)
         game.showLongText("meilleur chance la prochaine fois", DialogLayout.Bottom)
+        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
         game.setGameOverPlayable(false, music.melodyPlayable(music.wawawawaa), false)
         menu_ = 1
-    }
-})
-forever(function () {
-    if (info.score() < 0) {
-        info.setScore(0)
-    }
-})
-forever(function () {
-    if (monde == _1 + 1) {
-        controller.moveSprite(joueur, 100, 100)
-        joueur.ay = 0
-        animation.stopAnimation(animation.AnimationTypes.All, joueur)
-    } else {
-        joueur.ay = 300
-        controller.moveSprite(joueur, 100, 0)
     }
 })
 forever(function () {
@@ -2574,5 +3725,91 @@ forever(function () {
 forever(function () {
     if (!(curseur.overlapsWith(start))) {
         start.setScale(2, ScaleAnchor.Middle)
+    }
+})
+forever(function () {
+    if (m == 1 + 1) {
+        music.play(music.stringPlayable("C5 B A B B C5 B B ", 220), music.PlaybackMode.UntilDone)
+    }
+})
+game.onUpdateInterval(500, function () {
+    if (crossroute == 1) {
+        vrg = sprites.createProjectileFromSide(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . 2 2 2 2 2 2 2 2 . . . . 
+            . . . 2 4 2 2 2 2 2 2 c 2 . . . 
+            . . 2 c 4 2 2 2 2 2 2 c c 2 . . 
+            . 2 c c 4 4 4 4 4 4 2 c c 4 2 d 
+            . 2 c 2 e e e e e e e b c 4 2 2 
+            . 2 2 e b b e b b b e e b 4 2 2 
+            . 2 e b b b e b b b b e 2 2 2 2 
+            . e e 2 2 2 e 2 2 2 2 2 e 2 2 2 
+            . e e e e e e f e e e f e 2 d d 
+            . e e e e e e f e e f e e e 2 d 
+            . e e e e e e f f f e e e e e e 
+            . e f f f f e e e e f f f e e e 
+            . . f f f f f e e f f f f f e . 
+            . . . f f f . . . . f f f f . . 
+            . . . . . . . . . . . . . . . . 
+            `, randint(50, 175), 0)
+        tiles.placeOnRandomTile(vrg, assets.tile`myTile80`)
+        vrg.setPosition(0, vrg.y)
+        if (vrg.x == 165) {
+            sprites.destroy(vrg)
+        }
+    }
+})
+game.onUpdateInterval(500, function () {
+    if (crossroute == 1) {
+        vrd = sprites.createProjectileFromSide(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 2 2 2 2 2 2 2 2 . . 
+            . . . . . 2 c 2 2 2 2 2 2 4 2 . 
+            . . . . 2 c c 2 2 2 2 2 2 4 c 2 
+            . . d 2 4 c c 2 4 4 4 4 4 4 c c 
+            . d 2 2 4 c b e e e e e e e 2 c 
+            . 2 2 2 4 b e e b b b e b b e 2 
+            . 2 2 2 2 2 e b b b b e b b b e 
+            . 2 2 2 2 e 2 2 2 2 2 e 2 2 2 e 
+            . 2 d d 2 e f e e e f e e e e e 
+            . d d 2 e e e f e e f e e e e e 
+            . e e e e e e e f f f e e e e e 
+            . e e e e f f f e e e e f f f f 
+            . . . e f f f f f e e f f f f f 
+            . . . . f f f f . . . . f f f . 
+            . . . . . . . . . . . . . . . . 
+            `, randint(50, -175), 0)
+        tiles.placeOnRandomTile(vrd, assets.tile`myTile81`)
+        vrd.setPosition(165, vrd.y)
+        if (vrd.x == -5) {
+            sprites.destroy(vrd)
+        }
+    }
+})
+game.onUpdateInterval(200, function () {
+    if (crossroute == 1) {
+        vm = sprites.createProjectileFromSide(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . 2 2 2 2 2 2 2 2 . . . . 
+            . . . 2 4 2 2 2 2 2 2 c 2 . . . 
+            . . 2 c 4 2 2 2 2 2 2 c c 2 . . 
+            . 2 c c 4 4 4 4 4 4 2 c c 4 2 d 
+            . 2 c 2 e e e e e e e b c 4 2 2 
+            . 2 2 e b b e b b b e e b 4 2 2 
+            . 2 e b b b e b b b b e 2 2 2 2 
+            . e e 2 2 2 e 2 2 2 2 2 e 2 2 2 
+            . e e e e e e f e e e f e 2 d d 
+            . e e e e e e f e e f e e e 2 d 
+            . e e e e e e f f f e e e e e e 
+            . e f f f f e e e e f f f e e e 
+            . . f f f f f e e f f f f f e . 
+            . . . f f f . . . . f f f f . . 
+            . . . . . . . . . . . . . . . . 
+            `, randint(30, 100), 0)
+        tiles.placeOnRandomTile(vm, assets.tile`myTile82`)
+        vm.setPosition(0, vm.y)
+        if (vm.x == 165) {
+            sprites.destroy(vm)
+        }
     }
 })

@@ -599,7 +599,7 @@ controller.up.onEvent(ControllerButtonEvent.Released, function () {
     }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.pic, function (sprite, otherSprite) {
-    if (joueur.y < otherSprite.y + 10) {
+    if (joueur.y < otherSprite.y - 10) {
         sprites.destroy(otherSprite, effects.fire, 100)
         info.changeScoreBy(5)
     } else {
@@ -908,6 +908,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile133`, function (sprite,
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile91`, function (sprite, location) {
     m = 2
+    monde = 2
+    music.stopAllSounds()
+    music.play(music.stringPlayable("C5 B A B B C5 B B ", 220), music.PlaybackMode.LoopingInBackground)
     sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
     sprites.destroyAllSpritesOfKind(SpriteKind.train)
     crossroute = 20
@@ -1264,9 +1267,8 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 info.onLifeZero(function () {
     if (go > 0) {
-        let monde = 0
         extralife += -1
-        if (lvl > 0 + 0) {
+        if (monde == 1 + 0) {
             pause(100)
             info.setLife(3)
             info.setScore(0)
@@ -1403,7 +1405,7 @@ info.onLifeZero(function () {
             scene.setBackgroundColor(7)
             game.showLongText("m-1", DialogLayout.Bottom)
             gravité = 1
-        } else if (monde == 2) {
+        } else if (monde == 1 + 1) {
             pause(100)
             info.setLife(3)
             info.setScore(0)
@@ -1598,10 +1600,10 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile136`, function (sprite,
         . . . . . c c c c c c c . . . . . 
         . . . . . . . . . . . . . . . . . 
         `, SpriteKind.pic)
-    bouldepic.setPosition(joueur.x - 80, joueur.y - 80)
+    bouldepic.setPosition(joueur.x, joueur.y - 80)
     bouldepic.ay = 350
     bouldepic.follow(joueur, 0)
-    bouldepic.setVelocity(50, 0)
+    bouldepic.setVelocity(0, 0)
     bdp = 1
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile68`, function (sprite, location) {
@@ -2258,6 +2260,7 @@ let start: Sprite = null
 let train: Sprite = null
 let bdp = 0
 let bouldepic: Sprite = null
+let monde = 0
 let m = 0
 let bee: Sprite = null
 let crossroute = 0
@@ -3385,6 +3388,7 @@ forever(function () {
             ..1dddddddddddddddddddddddddddddddddddddddddd1..
             ...111111111111111111111111111111111111111111...
             `, SpriteKind.menu)
+        start.setPosition(92, 61)
         curseur = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . 1 1 1 1 . 
@@ -3440,6 +3444,7 @@ forever(function () {
         didactitiel = 1
         _1 = 0
         extralife = 3
+        monde = 1
         gravité = 0
         joueur = sprites.create(img`
             . . . . . . f f f f . . . . . . 
@@ -3582,7 +3587,7 @@ forever(function () {
             7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
             7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
             `)
-        joueur.ay = 350
+        joueur.ay = 300
         joueur.setStayInScreen(true)
         scene.cameraFollowSprite(joueur)
         tiles.setCurrentTilemap(tilemap`didactitiel1`)
@@ -3592,6 +3597,7 @@ forever(function () {
         for (let value of tiles.getTilesByType(assets.tile`myTile49`)) {
             tiles.setTileAt(value, assets.tile`transparency16`)
         }
+        music.play(music.createSong(hex`0078000408020303001c0001dc00690000045e0100040000000000000000000005640001040003120000000800011b18002000011930003800012206001c00010a006400f401640000040000000000000000000000000000000002300000000800012a08001000012710001800012418002000012020002800012028003000012430003800012738004000012a09010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c8003000000001000109080009000106100011000104180019000102200021000102280029000104300031000106380039000108`), music.PlaybackMode.LoopingInBackground)
     }
 })
 forever(function () {
@@ -3776,17 +3782,30 @@ forever(function () {
     }
 })
 forever(function () {
-    if (m == 1 + 1) {
-        music.play(music.stringPlayable("C5 B A B B C5 B B ", 220), music.PlaybackMode.UntilDone)
+    if (monde == 1 + 1) {
+    	
+    } else if (monde == 1 + 0) {
+    	
     }
 })
 forever(function () {
     if (bdp == 0 + 1) {
         if (bouldepic.isHittingTile(CollisionDirection.Left)) {
-            bouldepic.setVelocity(-50, 0)
+            bouldepic.setVelocity(100, 0)
+            bouldepic.setPosition(bouldepic.x + 5, bouldepic.y)
         }
         if (bouldepic.isHittingTile(CollisionDirection.Right)) {
-            bouldepic.setVelocity(50, 0)
+            bouldepic.setVelocity(-100, 0)
+            bouldepic.setPosition(bouldepic.x - 5, bouldepic.y)
+        }
+        if (bouldepic.isHittingTile(CollisionDirection.Bottom)) {
+            if (bouldepic.vx < 0) {
+            	
+            } else if (bouldepic.vx > 0) {
+            	
+            } else {
+                bouldepic.setVelocity(100, 0)
+            }
         }
     }
 })

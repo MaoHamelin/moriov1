@@ -1,5 +1,5 @@
 {
-    "name": "morio v2",
+    "name": "morio",
     "version": "0.2.0",
     "description": "",
     "dependencies": {
@@ -23,7 +23,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.12.51",
+        "target": "1.12.53",
         "targetId": "arcade"
     },
     "supportedTargets": [

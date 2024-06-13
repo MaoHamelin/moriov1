@@ -10,6 +10,7 @@ namespace SpriteKind {
     export const curseur_ = SpriteKind.create()
     export const menu = SpriteKind.create()
     export const train = SpriteKind.create()
+    export const pic = SpriteKind.create()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 100)
@@ -30,6 +31,10 @@ controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
             joueur.setPosition(46, -5)
         }
     }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile135`, function (sprite, location) {
+    info.changeLifeBy(-1)
+    joueur.setPosition(drapeau_a.x, drapeau_a.y)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, location) {
     if (didactitiel == _1 + 4) {
@@ -591,6 +596,16 @@ controller.up.onEvent(ControllerButtonEvent.Released, function () {
             game.showLongText("Appuis sur \"A\" ou \"D\" pour bouger", DialogLayout.Bottom)
             didactitiel += 1
         }
+    }
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.pic, function (sprite, otherSprite) {
+    if (joueur.y < otherSprite.y + 10) {
+        sprites.destroy(otherSprite, effects.fire, 100)
+        info.changeScoreBy(5)
+    } else {
+        sprites.destroy(otherSprite, effects.spray, 100)
+        info.changeLifeBy(-1)
+        joueur.setPosition(drapeau_a.x, drapeau_a.y)
     }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile129`, function (sprite, location) {
@@ -1532,6 +1547,10 @@ info.onLifeZero(function () {
         }
     }
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile134`, function (sprite, location) {
+    info.changeLifeBy(-1)
+    joueur.setPosition(drapeau_a.x, drapeau_a.y)
+})
 sprites.onOverlap(SpriteKind.train, SpriteKind.Player, function (sprite, otherSprite) {
     if (crossroute == 1) {
         crossroute = 0
@@ -1557,6 +1576,33 @@ info.onScore(200, function () {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.life, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 100)
     info.changeLifeBy(1)
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile136`, function (sprite, location) {
+    tiles.setTileAt(location, assets.tile`transparency16`)
+    bouldepic = sprites.create(img`
+        . . . . . . . . . . . . . . . . . 
+        . . . . . c c c c c c c . . . . . 
+        . . . c c d 2 d 2 d 2 d c c . . . 
+        . . c 2 2 2 2 2 2 2 2 2 2 2 c . . 
+        . . c d 2 d 2 d 2 d 2 d 2 d c . . 
+        . c 2 2 2 2 2 2 2 2 2 2 2 2 2 c . 
+        . c 2 d 2 d 2 d 2 d 2 d 2 d 2 c . 
+        . c 2 2 2 2 2 2 2 2 2 2 2 2 2 c . 
+        . c 2 d 2 d 2 d 2 d 2 d 2 d 2 c . 
+        . c 2 2 2 2 2 2 2 2 2 2 2 2 2 c . 
+        . c 2 d 2 d 2 d 2 d 2 d 2 d 2 c . 
+        . c 2 2 2 2 2 2 2 2 2 2 2 2 2 c . 
+        . . c d 2 d 2 d 2 d 2 d 2 d c . . 
+        . . c 2 2 2 2 2 2 2 2 2 2 2 c . . 
+        . . . c c d 2 d 2 d 2 d c c . . . 
+        . . . . . c c c c c c c . . . . . 
+        . . . . . . . . . . . . . . . . . 
+        `, SpriteKind.pic)
+    bouldepic.setPosition(joueur.x - 80, joueur.y - 80)
+    bouldepic.ay = 350
+    bouldepic.follow(joueur, 0)
+    bouldepic.setVelocity(50, 0)
+    bdp = 1
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile68`, function (sprite, location) {
     scene.setBackgroundColor(7)
@@ -2210,10 +2256,12 @@ let drapeau_na: Sprite = null
 let curseur: Sprite = null
 let start: Sprite = null
 let train: Sprite = null
+let bdp = 0
+let bouldepic: Sprite = null
 let m = 0
 let bee: Sprite = null
-let drapeau_a: Sprite = null
 let crossroute = 0
+let drapeau_a: Sprite = null
 let lvl = 0
 let didactitiel = 0
 let go = 0
@@ -3730,6 +3778,16 @@ forever(function () {
 forever(function () {
     if (m == 1 + 1) {
         music.play(music.stringPlayable("C5 B A B B C5 B B ", 220), music.PlaybackMode.UntilDone)
+    }
+})
+forever(function () {
+    if (bdp == 0 + 1) {
+        if (bouldepic.isHittingTile(CollisionDirection.Left)) {
+            bouldepic.setVelocity(-50, 0)
+        }
+        if (bouldepic.isHittingTile(CollisionDirection.Right)) {
+            bouldepic.setVelocity(50, 0)
+        }
     }
 })
 game.onUpdateInterval(500, function () {
